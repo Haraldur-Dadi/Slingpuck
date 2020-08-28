@@ -4,21 +4,18 @@ public class Puck : MonoBehaviour {
     Rigidbody2D rb;
     SpriteRenderer image;
     Vector2 posToMove;
-    bool shouldMove;
+    bool moving;
     bool team1;
-
-    public Material team1Mat;
-    public Material team2Mat;
     public PhysicsMaterial2D bounce;
 
     void Start() {
         rb = GetComponent<Rigidbody2D>();
         image = GetComponent<SpriteRenderer>();
-        shouldMove = false;
+        moving = false;
     }
 
     void FixedUpdate() {
-        if (shouldMove)
+        if (moving)
             Move();
     }
 
@@ -27,7 +24,7 @@ public class Puck : MonoBehaviour {
     }
 
     public void ChangePos(Vector2 pos) {
-        shouldMove = true;
+        moving = true;
         rb.sharedMaterial = null;
         posToMove = pos;
 
@@ -38,24 +35,22 @@ public class Puck : MonoBehaviour {
         }
     }
     public void StopMove() {
-        shouldMove = false;
+        moving = false;
         rb.sharedMaterial = bounce;
         rb.velocity = Vector2.zero;
     }
     public void SetTeam(bool team) {
-        if (!shouldMove) {
-            team1 = team;
-            ChangeMaterial();
-        }
+        team1 = team;
+        GameManager.Instance.PuckChangeTeam(this);
     }
     public bool GetTeam() {
         return team1;
     }
-    private void ChangeMaterial() {
+    public void ChangeColor(Color color) {
         if (team1) {
-            image.material = team1Mat;
+            image.color = color;
         } else {
-            image.material = team2Mat;
+            image.color = color;
         }
     }
 }
