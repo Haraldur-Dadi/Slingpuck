@@ -16,12 +16,12 @@ public class GameManager : MonoBehaviour {
         }
     }
     #endregion
-    bool playing;
-    bool player1;
+    public bool playing;
+    public bool player1;
     public GameObject puck;
     public Transform[] puckSpawnPoints;
     List<Puck> pucksTeam1;
-    List<Puck> pucksTeam2;
+    public List<Puck> pucksTeam2;
 
     List<int> activeTouches;
     List<Puck> selectedPucks;
@@ -72,6 +72,9 @@ public class GameManager : MonoBehaviour {
             Instantiate(puck, spawnPoint.position, Quaternion.identity);
         }
         playing = true;
+
+        if (player1)
+            GetComponent<AiManager>().StartAIBeforeGame();
     }
     #endregion
     #region Gameplay
@@ -89,19 +92,15 @@ public class GameManager : MonoBehaviour {
                     if (colliders.Length > 0) {
                         foreach (Collider2D collider in colliders){
                             if (collider.CompareTag("Puck")) {
-                                if (player1) {
-                                    // Don't allow single player to touch opposite puck
-                                    Puck puck = collider.GetComponent<Puck>();
-                                    if (puck.GetTeam()) {
-                                        activeTouches.Add(touch.fingerId);
-                                        selectedPucks.Add(puck);
-                                        break;
-                                    }
-                                } else {
-                                    activeTouches.Add(touch.fingerId);
-                                    selectedPucks.Add(collider.GetComponent<Puck>());
+                                Puck puck = collider.GetComponent<Puck>();
+
+                                // Don't allow single player to touch opposite puck
+                                if (player1 && !puck.GetTeam())
                                     break;
-                                }
+
+                                activeTouches.Add(touch.fingerId);
+                                selectedPucks.Add(puck);
+                                break;
                             }
                         }
                     }

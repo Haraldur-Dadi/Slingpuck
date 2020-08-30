@@ -1,7 +1,7 @@
 ﻿using UnityEngine;
 
 public class Puck : MonoBehaviour {
-    Rigidbody2D rb;
+    public Rigidbody2D rb;
     SpriteRenderer image;
     Vector2 posToMove;
     bool moving;
@@ -38,6 +38,9 @@ public class Puck : MonoBehaviour {
         moving = false;
         rb.sharedMaterial = bounce;
         rb.velocity = Vector2.zero;
+    }
+    public Vector2 GetPos() {
+        return new Vector2(transform.position.x, transform.position.y);
     }
     public void SetTeam(bool team) {
         team1 = team;
