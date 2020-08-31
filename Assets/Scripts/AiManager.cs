@@ -14,16 +14,19 @@ public class AiManager : MonoBehaviour {
     Vector2 startPos;
     Vector2 movePos;
     Puck selectedPuck;
+    public string difficulty;
 
     public Button easyDifficultyBtn;
     public Button mediumDifficultyBtn;
     public Button hardDifficultyBtn;
 
+    #region Setup
     private void Start() {
         SelectEasyDifficulty();
     }
-
     public void SelectEasyDifficulty() {
+        difficulty = "easy";
+
         optimalShotZone = new Vector2(0.75f, 4.5f);
         moveSpeed = 3.5f;
         moveIntervalMax = 2.25f;
@@ -34,6 +37,8 @@ public class AiManager : MonoBehaviour {
         hardDifficultyBtn.interactable = true;
     }
     public void SelectMediumDifficulty() {
+        difficulty = "medium";
+
         optimalShotZone = new Vector2(0.5f, 4.5f);
         moveSpeed = 5f;
         moveIntervalMax = 1.85f;
@@ -44,6 +49,8 @@ public class AiManager : MonoBehaviour {
         hardDifficultyBtn.interactable = true;
     }
     public void SelectHardDifficulty() {
+        difficulty = "hard";
+
         optimalShotZone = new Vector2(0.25f, 4.5f);
         moveSpeed = 6.5f;
         moveIntervalMax = 1.25f;
@@ -53,13 +60,14 @@ public class AiManager : MonoBehaviour {
         mediumDifficultyBtn.interactable = true;
         hardDifficultyBtn.interactable = false;
     }
-
     public void StartAIBeforeGame() {
         start = true;
         canPickup = false;
         StartCoroutine(WaitBetweenMoves());
     }
+    #endregion
 
+    #region GamePlay
     void FixedUpdate() {
         // AI for singleplayer
         if (GameManager.Instance.playing && GameManager.Instance.player1 && canPickup) {
@@ -74,7 +82,6 @@ public class AiManager : MonoBehaviour {
             }
         }
     }
-
     void PickUpPuck() {
         // Randomly chooses a puck on his half
         if (GameManager.Instance.pucksTeam2.Count > 0) {
@@ -89,17 +96,14 @@ public class AiManager : MonoBehaviour {
             movePos = Vector2.zero;
         }
     }
-
     void ChoosePosToMove() {
         // Chooses 
         movePos = optimalShotZone;
         movePos.x = Random.Range(-optimalShotZone.x, optimalShotZone.x);
-        Debug.Log(movePos.x);
         moveInterval = 0f;
     }
-
     void MovePuck() {
-        // Moves selected puck towards movePos
+        // Moves selected puck towards movePos, shoot when reached
         if (moveInterval >= moveIntervalMax) {
             ShootPuck();
         } else {
@@ -108,25 +112,23 @@ public class AiManager : MonoBehaviour {
             selectedPuck.ChangePos(tmpMovePos);
         }
     }
-
     void ShootPuck() {
-        // Drags puck slightly to create tension on "rope"
+        // Drags puck slightly to create tension on "rope" then releases the puck
         movePos.y -= shotSpeed;
         selectedPuck.ChangePos(movePos);
         ReleasePuck();
     }
-
     void ReleasePuck() {
-        // Releases puck
+        // Releases puck and starts wait between moves
         if (selectedPuck)
             selectedPuck.StopMove();
         canPickup = false;
         selectedPuck = null;
         StartCoroutine(WaitBetweenMoves());
     }
-
     IEnumerator WaitBetweenMoves() {
         yield return new WaitForSeconds(waitSec);
         canPickup = true;
     }
+    #endregion
 }

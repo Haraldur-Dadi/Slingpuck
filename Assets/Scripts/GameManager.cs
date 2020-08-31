@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Analytics;
 using TMPro;
 
 public class GameManager : MonoBehaviour {
@@ -16,6 +17,7 @@ public class GameManager : MonoBehaviour {
         }
     }
     #endregion
+    public AiManager ai;
     public bool playing;
     public bool player1;
     public GameObject puck;
@@ -125,15 +127,23 @@ public class GameManager : MonoBehaviour {
         if (puck.GetTeam()) {
             // Team 1
             if (pucksTeam2.Contains(puck))
+                // Remove from team 2 if there
                 pucksTeam2.Remove(puck);
-            pucksTeam1.Add(puck);
-            puck.ChangeColor(player1Color);
+            if (!pucksTeam1.Contains(puck)) {
+                // Only if not already in team 1
+                pucksTeam1.Add(puck);
+                puck.ChangeColor(player1Color);
+            }
         } else {
             // Team 2
             if (pucksTeam1.Contains(puck))
+                // Remove from team 1 if there
                 pucksTeam1.Remove(puck);
-            pucksTeam2.Add(puck);
-            puck.ChangeColor(player2Color);
+            if (!pucksTeam2.Contains(puck)) {
+                // Only if not already in team 2
+                pucksTeam2.Add(puck);
+                puck.ChangeColor(player2Color);
+            }
         }
 
         if (playing)
@@ -164,5 +174,19 @@ public class GameManager : MonoBehaviour {
             team2Wins += 1;
         }
         nrWinsTxt.text = team1Wins + " - " + team2Wins;
+        ReportGameFinishedAnalytics(team1Won);
+    }
+
+    void ReportGameFinishedAnalytics(bool team1Won) {
+        if (player1) {
+            Analytics.CustomEvent("1_player_finished", new Dictionary<string, object> { {"difficulty", ai.difficulty} } );
+            if (team1Won) {
+                Analytics.CustomEvent("1_player_won", new Dictionary<string, object> { {"won", true} } );
+            } else {
+                Analytics.CustomEvent("1_player_won", new Dictionary<string, object> { {"won", false} } );
+            }
+        } else {
+            Analytics.CustomEvent("2_player_finished", new Dictionary<string, object> { {"finished", true} } );
+        }
     }
 }
