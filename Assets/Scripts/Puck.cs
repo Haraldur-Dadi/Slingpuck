@@ -37,7 +37,8 @@ public class Puck : MonoBehaviour {
     public void StopMove() {
         moving = false;
         rb.sharedMaterial = bounce;
-        rb.velocity = Vector2.zero;
+        if (!GameManager.Instance.player1 && !team1)
+            rb.velocity = Vector2.zero;
     }
     public Vector2 GetPos() {
         return new Vector2(transform.position.x, transform.position.y);
