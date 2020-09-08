@@ -15,6 +15,7 @@ public class AudioManager : MonoBehaviour {
     #endregion
     public AudioSource musicAudioSource;
     public AudioSource sfxAudioSource;
+    public AudioClip menuThemeSong;
     public AudioClip buttonClick;
 
     public float musicVol;
@@ -29,6 +30,7 @@ public class AudioManager : MonoBehaviour {
     private void Start() {
         ChangeMusicVol(PlayerPrefs.GetFloat("MusicVol", 1f));
         ChangeSfxVol(PlayerPrefs.GetFloat("SfxVol", 1f));
+        musicAudioSource.clip = menuThemeSong;
         musicAudioSource.Play();
 
         musicVolSlider.value = musicVol;

@@ -1,5 +1,4 @@
-﻿using System.Collections;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Analytics;
 using TMPro;
@@ -107,15 +106,15 @@ public class GameManager : MonoBehaviour {
                         }
                     }
                 } else if (touch.phase == TouchPhase.Ended) {
-                    if (activeTouches.Contains(touch.fingerId)) {
-                        int index = activeTouches.IndexOf(touch.fingerId);
+                    int index = activeTouches.IndexOf(touch.fingerId);
+                    if (index != -1) {
                         selectedPucks[index].StopMove();
                         activeTouches.RemoveAt(index);
                         selectedPucks.RemoveAt(index);
                     }
                 } else if (touch.phase == TouchPhase.Moved) {
-                    if (activeTouches.Contains(touch.fingerId)) {
-                        int index = activeTouches.IndexOf(touch.fingerId);
+                    int index = activeTouches.IndexOf(touch.fingerId);
+                    if (index != -1) {
                         Vector2 touchPos = Camera.main.ScreenToWorldPoint(touch.position);
                         selectedPucks[index].ChangePos(touchPos);
                     }
@@ -124,30 +123,25 @@ public class GameManager : MonoBehaviour {
         }
     }
     public void PuckChangeTeam(Puck puck) {
-        if (puck.GetTeam()) {
-            // Team 1
-            if (pucksTeam2.Contains(puck))
-                // Remove from team 2 if there
-                pucksTeam2.Remove(puck);
+        if (puck.GetTeam()) { // Team 1
+            pucksTeam2.Remove(puck); // Remove from team 2 if there
+
             if (!pucksTeam1.Contains(puck)) {
-                // Only if not already in team 1
+                // Not already in team 1
                 pucksTeam1.Add(puck);
                 puck.ChangeColor(player1Color);
+                CheckWin();
             }
-        } else {
-            // Team 2
-            if (pucksTeam1.Contains(puck))
-                // Remove from team 1 if there
-                pucksTeam1.Remove(puck);
+        } else { // Team 2
+            pucksTeam1.Remove(puck); // Remove from team 1 if there
+
             if (!pucksTeam2.Contains(puck)) {
-                // Only if not already in team 2
+                // Not already in team 2
                 pucksTeam2.Add(puck);
                 puck.ChangeColor(player2Color);
+                CheckWin();
             }
         }
-
-        if (playing)
-            CheckWin();
     }
     void CheckWin() {
         if (pucksTeam2.Count == 10) {
