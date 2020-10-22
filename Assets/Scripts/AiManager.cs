@@ -15,11 +15,13 @@ public class AiManager : MonoBehaviour {
     #endregion
 
     bool canPickup;
+
     float moveInterval;
     float moveIntervalMax = 1f;
     Vector2 startPos;
     Vector2 movePos;
     Puck selectedPuck;
+    public LayerMask puckMask;
 
     // Base values
     Vector2 baseOptimalShotZone = new Vector2(0.65f, 4.5f);
@@ -30,7 +32,6 @@ public class AiManager : MonoBehaviour {
     float moveSpeed;
     float secBetweenMoves;
 
-    #region Setup
     public void SelectDifficulty() {
         // Skill rank is earned by beating the ai, and can be at most 10
         float skillRank = PlayerPrefs.GetFloat("SkillRank", 0f);
@@ -43,17 +44,29 @@ public class AiManager : MonoBehaviour {
         SelectDifficulty();
         ReleasePuck();
     }
-    #endregion
-
+    Puck PuckInWay(Vector2 startPos, Vector2 endPos) {
+        RaycastHit2D hit = Physics2D.Linecast(startPos, endPos, puckMask);
+        if (hit) {
+            Puck hitPuck = hit.collider.GetComponent<Puck>();
+            if (GameManager.Instance.pucksTeam2.Contains(hitPuck))
+                return hitPuck;
+        }
+        return null;
+    }
+    void ChoosePosToMove() {
+        // Chooses position to move the puck towards
+        movePos = optimalShotZone;
+        movePos.x = Random.Range(-optimalShotZone.x, optimalShotZone.x);
+    }
     void FixedUpdate() {
         // AI for singleplayer
         if (GameManager.Instance.playing && GameManager.Instance.player1 && canPickup) {
             if (selectedPuck == null) {
+                ChoosePosToMove();
                 PickUpPuck();
+                moveInterval = 0f;
             } else {
-                if (movePos == Vector2.zero) {
-                    ChoosePosToMove();
-                } else if (moveInterval <= moveIntervalMax) {
+                if (moveInterval <= moveIntervalMax) {
                     MovePuck();
                 } else {
                     ReleasePuck();
@@ -62,22 +75,26 @@ public class AiManager : MonoBehaviour {
         }
     }
     void PickUpPuck() {
-        // Randomly chooses a puck on ai half
+        // Choose a puck on ai half
         if (GameManager.Instance.pucksTeam2.Count > 0) {
-            // Pucks available
-            // Pick random puck on ai half of board
-            int index = Random.Range(0, GameManager.Instance.pucksTeam2.Count - 1);
-            selectedPuck = GameManager.Instance.pucksTeam2[index];
-            // Setup
+            // Check if there is a puck blocking the middle, then choose it
+            Puck tmpPuck = PuckInWay(Vector2.zero, movePos);
+            if (tmpPuck != null) {
+                selectedPuck = tmpPuck;
+            } else {
+                // Pick a random puck
+                int index = Random.Range(0, GameManager.Instance.pucksTeam2.Count - 1);
+                Puck tmpSelectedPuck = GameManager.Instance.pucksTeam2[index];
+                Puck puckInWay = PuckInWay(movePos, tmpSelectedPuck.GetPos());
+
+                if (tmpSelectedPuck == puckInWay) {
+                    selectedPuck = tmpSelectedPuck;
+                } else {
+                    selectedPuck = puckInWay;
+                }
+            }
             startPos = selectedPuck.GetPos();
-            movePos = Vector2.zero;
         }
-    }
-    void ChoosePosToMove() {
-        // Chooses position to move the puck towards
-        movePos = optimalShotZone;
-        movePos.x = Random.Range(-optimalShotZone.x, optimalShotZone.x);
-        moveInterval = 0f;
     }
     void MovePuck() {
         // Moves selected puck towards movePos

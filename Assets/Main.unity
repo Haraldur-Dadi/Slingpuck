@@ -5025,7 +5025,7 @@ AudioSource:
   serializedVersion: 4
   OutputAudioMixerGroup: {fileID: 0}
   m_audioClip: {fileID: 0}
-  m_PlayOnAwake: 1
+  m_PlayOnAwake: 0
   m_Volume: 1
   m_Pitch: 1
   Loop: 0
@@ -5124,7 +5124,7 @@ AudioSource:
   m_PlayOnAwake: 1
   m_Volume: 1
   m_Pitch: 1
-  Loop: 0
+  Loop: 1
   Mute: 0
   Spatialize: 0
   SpatializePostEffects: 0
@@ -5220,6 +5220,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   musicAudioSource: {fileID: 854532930}
   sfxAudioSource: {fileID: 854532929}
+  menuThemeSong: {fileID: 8300000, guid: cac15829e6c7d428e85532870bfe3a18, type: 3}
   buttonClick: {fileID: 8300000, guid: 2a1a4184c82e4284da104309ce1de85f, type: 3}
   musicVol: 0
   sfxVol: 0
@@ -5258,6 +5259,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 329794e9a57b1d542956ee8988724137, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  puckMask:
+    serializedVersion: 2
+    m_Bits: 512
 --- !u!1 &891662979
 GameObject:
   m_ObjectHideFlags: 0

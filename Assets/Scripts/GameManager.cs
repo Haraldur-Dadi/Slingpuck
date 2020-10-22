@@ -1,5 +1,4 @@
-﻿using System.Collections;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Analytics;
 using TMPro;
@@ -117,20 +116,16 @@ public class GameManager : MonoBehaviour {
             // Change to Team 1
             pucksTeam2.Remove(puck); // Removes from team 2 if it's there
             if (!pucksTeam1.Contains(puck)) {
-                // Only if not already in team 1
                 pucksTeam1.Add(puck);
             }
         } else {
             // Change to Team 2
             pucksTeam1.Remove(puck); // Removes from team 1 if it's there
             if (!pucksTeam2.Contains(puck)) {
-                // Only if not already in team 2
                 pucksTeam2.Add(puck);
             }
         }
-
-        if (playing)
-            CheckWin();
+        CheckWin();
     }
     void CheckWin() {
         if (pucksTeam2.Count == pucksToWin) {
