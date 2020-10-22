@@ -1,85 +1,69 @@
 ﻿using System.Collections;
 using UnityEngine;
-using UnityEngine.UI;
 using TMPro;
 
 public class UIManager : MonoBehaviour {
-    public Animator menuAnim; 
+    #region Instance
+    public static UIManager Instance;
+    private void Awake() {
+        if (Instance == null) {
+            Instance = this;
+            menuAnim.SetTrigger("Start");
+            MainMenu();
+        } else {
+            Destroy(this);
+        }
+    }
+    #endregion
+
+    public Animator menuAnim;
     public GameObject mainMenu;
     public GameObject settingsMenu;
-    public Button[] colorBtns;
-    public TextMeshProUGUI colorTxt;
-    bool players1;
-    bool player1Color;
-
-    void Start() {
-        MainMenu();
-        menuAnim.SetBool("Start", true);
-    }
+    public GameObject shopMenu;
+    public GameObject winScreen;
+    public TextMeshProUGUI winTxt;
+    public TextMeshProUGUI nrWinsTxt;
 
     public void MainMenu() {
         // Display main menu
         mainMenu.SetActive(true);
         settingsMenu.SetActive(false);
-        menuAnim.SetBool("Start", false);
+        shopMenu.SetActive(false);
+        HideWinScreen();
     }
-    public void BackToMenu() {
+    public void DisplaySettings() {
+        // Display/hide settings menu
         AudioManager.Instance.PlayButtonClick();
-        MainMenu();
+        settingsMenu.SetActive(!settingsMenu.activeSelf);
     }
-    public void ShowSettings() {
-        // Display settings menu
+    public void DisplayShop() {
+        // Display/hide shop menu
         AudioManager.Instance.PlayButtonClick();
-        mainMenu.SetActive(false);
-        settingsMenu.SetActive(true);
+        mainMenu.SetActive(!mainMenu.activeSelf);
+        shopMenu.SetActive(!shopMenu.activeSelf);
     }
-    public void ShowColorScreen(bool nrPlayers1) {
-        colorTxt.text = "Player 1 color:";
-        players1 = nrPlayers1;
-        GameManager.Instance.SinglePlayer(nrPlayers1);
-        player1Color = false;
-        foreach (Button btn in colorBtns) {
-            btn.interactable = true;
-        }
-        StartCoroutine(SwitchPanels());
-    }
-    public void PlayerToMainMenu() {
-        StartCoroutine(PlayerBackToMainMenu());
-    }
-    IEnumerator SwitchPanels() {
+    public void StartGame(bool player1) {
         AudioManager.Instance.PlayButtonClick();
-        menuAnim.SetTrigger("SwitchPanels");
-        yield return new WaitForSeconds(.5f);
+        GameManager.Instance.SinglePlayer(player1);
+        StartCoroutine(GameReady());
     }
-    IEnumerator PlayerBackToMainMenu() {
-        AudioManager.Instance.PlayButtonClick();
-        GameManager.Instance.HideWinScreen();
-        menuAnim.SetTrigger("BackToMenu");
-        yield return new WaitForSeconds(.5f);
-        MainMenu();
-    }
-    public void SetPlayerColor(int btnIndex) {
-        AudioManager.Instance.PlayButtonClick();
-        if (players1) {
-            GameManager.Instance.SetPlayer1Color(colorBtns[btnIndex].GetComponent<Image>().color);
-            GameManager.Instance.SetPlayer2Color(Color.grey);
-            StartCoroutine(GameReady());
+    public void ShowWinScreen(bool team1Won) {
+        winScreen.SetActive(true);
+        if (team1Won) {
+            winTxt.text = "Team 1 won";
         } else {
-            if (!player1Color) {
-                GameManager.Instance.SetPlayer1Color(colorBtns[btnIndex].GetComponent<Image>().color);
-                colorBtns[btnIndex].interactable = false;
-                player1Color = true;
-                colorTxt.text = "Player 2 color:";
-            } else {
-                GameManager.Instance.SetPlayer2Color(colorBtns[btnIndex].GetComponent<Image>().color);
-                StartCoroutine(GameReady());
-            }
+            winTxt.text = "Team 2 won";
         }
+        nrWinsTxt.text = GameManager.Instance.team1Wins + " - " + GameManager.Instance.team2Wins;
     }
+    public void HideWinScreen() {
+        winScreen.SetActive(false);
+    }
+
     IEnumerator GameReady() {
         menuAnim.SetTrigger("Play");
         yield return new WaitForSeconds(.5f);
-        menuAnim.SetTrigger("Hide");
+        mainMenu.SetActive(false);
         GameManager.Instance.StartNewGame();
     }
 }

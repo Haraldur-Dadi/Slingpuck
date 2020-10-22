@@ -1,12 +1,13 @@
 ﻿using UnityEngine;
 
 public class Puck : MonoBehaviour {
-    public Rigidbody2D rb;
+    Rigidbody2D rb;
     SpriteRenderer image;
     Vector2 posToMove;
-    bool moving;
     bool team1;
+    bool moving;
     public PhysicsMaterial2D bounce;
+    public ContactFilter2D contactFilter;
 
     void Start() {
         rb = GetComponent<Rigidbody2D>();
@@ -24,8 +25,8 @@ public class Puck : MonoBehaviour {
     }
 
     public void ChangePos(Vector2 pos) {
-        moving = true;
         rb.sharedMaterial = null;
+        moving = true;
         posToMove = pos;
 
         if (team1) {
@@ -35,10 +36,11 @@ public class Puck : MonoBehaviour {
         }
     }
     public void StopMove() {
-        moving = false;
         rb.sharedMaterial = bounce;
-        if (!GameManager.Instance.player1 && !team1)
+        moving = false;
+        if (!rb.IsTouching(contactFilter)) {
             rb.velocity = Vector2.zero;
+        }
     }
     public Vector2 GetPos() {
         return new Vector2(transform.position.x, transform.position.y);

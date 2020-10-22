@@ -11,40 +11,29 @@ public class GameManager : MonoBehaviour {
         if (Instance == null) {
             Instance = this;
             playing = false;
-            HideWinScreen();
+            pucksToWin = puckSpawnPoints.Length;
         } else {
             Destroy(this);
         }
     }
     #endregion
-    public AiManager ai;
+
     public bool playing;
     public bool player1;
     public GameObject puck;
     public Transform[] puckSpawnPoints;
-    List<Puck> pucksTeam1;
+    public List<Puck> pucksTeam1;
     public List<Puck> pucksTeam2;
 
     List<int> activeTouches;
     List<Puck> selectedPucks;
     float touchRadius = 0.15f;
 
-    public GameObject winScreen;
-    public TextMeshProUGUI winTxt;
-    public TextMeshProUGUI nrWinsTxt;
-    int team1Wins;
-    int team2Wins;
-
-    Color player1Color;
-    Color player2Color;
+    public int team1Wins;
+    public int team2Wins;
+    int pucksToWin;
 
     #region Setup
-    public void SetPlayer1Color(Color color) {
-        player1Color = color;
-    }
-    public void SetPlayer2Color(Color color) {
-        player2Color = color;
-    }
     public void SinglePlayer(bool single) {
         player1 = single;
     }
@@ -53,7 +42,7 @@ public class GameManager : MonoBehaviour {
         foreach (GameObject puck in pucks) {
             Destroy(puck);
         }
-        HideWinScreen();
+        UIManager.Instance.HideWinScreen();
     }
     public void StartNewGame() {
         team1Wins = 0;
@@ -76,7 +65,7 @@ public class GameManager : MonoBehaviour {
         playing = true;
 
         if (player1)
-            GetComponent<AiManager>().StartAIBeforeGame();
+            AiManager.Instance.StartAIBeforeGame();
     }
     #endregion
     #region Gameplay
@@ -107,15 +96,15 @@ public class GameManager : MonoBehaviour {
                         }
                     }
                 } else if (touch.phase == TouchPhase.Ended) {
-                    if (activeTouches.Contains(touch.fingerId)) {
-                        int index = activeTouches.IndexOf(touch.fingerId);
+                    int index = activeTouches.IndexOf(touch.fingerId);
+                    if (index != -1) {
                         selectedPucks[index].StopMove();
                         activeTouches.RemoveAt(index);
                         selectedPucks.RemoveAt(index);
                     }
                 } else if (touch.phase == TouchPhase.Moved) {
-                    if (activeTouches.Contains(touch.fingerId)) {
-                        int index = activeTouches.IndexOf(touch.fingerId);
+                    int index = activeTouches.IndexOf(touch.fingerId);
+                    if (index != -1) {
                         Vector2 touchPos = Camera.main.ScreenToWorldPoint(touch.position);
                         selectedPucks[index].ChangePos(touchPos);
                     }
@@ -125,24 +114,18 @@ public class GameManager : MonoBehaviour {
     }
     public void PuckChangeTeam(Puck puck) {
         if (puck.GetTeam()) {
-            // Team 1
-            if (pucksTeam2.Contains(puck))
-                // Remove from team 2 if there
-                pucksTeam2.Remove(puck);
+            // Change to Team 1
+            pucksTeam2.Remove(puck); // Removes from team 2 if it's there
             if (!pucksTeam1.Contains(puck)) {
                 // Only if not already in team 1
                 pucksTeam1.Add(puck);
-                puck.ChangeColor(player1Color);
             }
         } else {
-            // Team 2
-            if (pucksTeam1.Contains(puck))
-                // Remove from team 1 if there
-                pucksTeam1.Remove(puck);
+            // Change to Team 2
+            pucksTeam1.Remove(puck); // Removes from team 1 if it's there
             if (!pucksTeam2.Contains(puck)) {
                 // Only if not already in team 2
                 pucksTeam2.Add(puck);
-                puck.ChangeColor(player2Color);
             }
         }
 
@@ -150,36 +133,22 @@ public class GameManager : MonoBehaviour {
             CheckWin();
     }
     void CheckWin() {
-        if (pucksTeam2.Count == 10) {
+        if (pucksTeam2.Count == pucksToWin) {
             // Team 1 wins
             playing = false;
-            ShowWinScreen(true);
-        } else if (pucksTeam1.Count == 10) {
+            team1Wins += 1;
+            UIManager.Instance.ShowWinScreen(true);
+        } else if (pucksTeam1.Count == pucksToWin) {
             // Team 2 wins
             playing = false;
-            ShowWinScreen(false);
+            team2Wins += 1;
+            UIManager.Instance.ShowWinScreen(false);
         }
     }
     #endregion
-    public void HideWinScreen() {
-        winScreen.SetActive(false);
-    }
-    void ShowWinScreen(bool team1Won) {
-        winScreen.SetActive(true);
-        if (team1Won) {
-            winTxt.text = "Team 1 won";
-            team1Wins += 1;
-        } else {
-            winTxt.text = "Team 2 won";
-            team2Wins += 1;
-        }
-        nrWinsTxt.text = team1Wins + " - " + team2Wins;
-        ReportGameFinishedAnalytics(team1Won);
-    }
 
     void ReportGameFinishedAnalytics(bool team1Won) {
         if (player1) {
-            Analytics.CustomEvent("1_player_finished", new Dictionary<string, object> { {"difficulty", ai.difficulty} } );
             if (team1Won) {
                 Analytics.CustomEvent("1_player_won", new Dictionary<string, object> { {"won", true} } );
             } else {

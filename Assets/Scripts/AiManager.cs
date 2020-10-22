@@ -3,64 +3,48 @@ using UnityEngine;
 using UnityEngine.UI;
 
 public class AiManager : MonoBehaviour {
+    #region Instance
+    public static AiManager Instance;
+    private void Awake() {
+        if (Instance == null) {
+            Instance = this;
+        } else {
+            Destroy(this);
+        }
+    }
+    #endregion
+
     bool canPickup;
-    bool start;
-    Vector2 optimalShotZone;
-    float secBetweenMoves;
     float moveInterval;
     float moveIntervalMax = 1f;
-    float moveSpeed;
     Vector2 startPos;
     Vector2 movePos;
     Puck selectedPuck;
-    public string difficulty;
 
-    public Button easyDifficultyBtn;
-    public Button mediumDifficultyBtn;
-    public Button hardDifficultyBtn;
+    // Base values
+    Vector2 baseOptimalShotZone = new Vector2(0.65f, 4.5f);
+    float baseMoveSpeed = 3.5f;
+    float baseSecBetweenMoves = 3.5f;
+    // Determined by skill rank
+    Vector2 optimalShotZone;
+    float moveSpeed;
+    float secBetweenMoves;
 
     #region Setup
-    private void Start() {
-        SelectEasyDifficulty();
-    }
-    public void SelectEasyDifficulty() {
-        difficulty = "easy";
+    public void SelectDifficulty() {
+        // Skill rank is earned by beating the ai, and can be at most 10
+        float skillRank = PlayerPrefs.GetFloat("SkillRank", 0f);
 
-        optimalShotZone = new Vector2(0.65f, 4.55f);
-        optimalShotZone.x = 0.75f;
-        moveSpeed = 3.75f;
-        secBetweenMoves = 3.5f;
-        easyDifficultyBtn.interactable = false;
-        mediumDifficultyBtn.interactable = true;
-        hardDifficultyBtn.interactable = true;
-    }
-    public void SelectMediumDifficulty() {
-        difficulty = "medium";
-
-        optimalShotZone = new Vector2(0.5f, 4.75f);
-        moveSpeed = 5f;
-        secBetweenMoves = 2.75f;
-        easyDifficultyBtn.interactable = true;
-        mediumDifficultyBtn.interactable = false;
-        hardDifficultyBtn.interactable = true;
-    }
-    public void SelectHardDifficulty() {
-        difficulty = "hard";
-
-        optimalShotZone = new Vector2(0.25f, 5f);
-        moveSpeed = 6.5f;
-        secBetweenMoves = 2f;
-        easyDifficultyBtn.interactable = true;
-        mediumDifficultyBtn.interactable = true;
-        hardDifficultyBtn.interactable = false;
+        optimalShotZone = new Vector2(baseOptimalShotZone.x - ((skillRank/10f)*5f), baseOptimalShotZone.y + (skillRank/10f));
+        moveSpeed = baseMoveSpeed + skillRank;
+        secBetweenMoves = baseSecBetweenMoves - skillRank;
     }
     public void StartAIBeforeGame() {
-        start = true;
+        SelectDifficulty();
         ReleasePuck();
     }
     #endregion
 
-    #region GamePlay
     void FixedUpdate() {
         // AI for singleplayer
         if (GameManager.Instance.playing && GameManager.Instance.player1 && canPickup) {
@@ -78,18 +62,12 @@ public class AiManager : MonoBehaviour {
         }
     }
     void PickUpPuck() {
-        // Randomly chooses a puck on his half
+        // Randomly chooses a puck on ai half
         if (GameManager.Instance.pucksTeam2.Count > 0) {
             // Pucks available
-            if (start) {
-                // Pick middle puck when starting
-                start = false;
-                selectedPuck = GameManager.Instance.pucksTeam2[2];
-            } else {
-                // Pick random puck on ai half of board
-                int index = Random.Range(0, GameManager.Instance.pucksTeam2.Count - 1);
-                selectedPuck = GameManager.Instance.pucksTeam2[index];
-            }
+            // Pick random puck on ai half of board
+            int index = Random.Range(0, GameManager.Instance.pucksTeam2.Count - 1);
+            selectedPuck = GameManager.Instance.pucksTeam2[index];
             // Setup
             startPos = selectedPuck.GetPos();
             movePos = Vector2.zero;
@@ -119,5 +97,4 @@ public class AiManager : MonoBehaviour {
         yield return new WaitForSeconds(secBetweenMoves);
         canPickup = true;
     }
-    #endregion
 }
