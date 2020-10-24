@@ -26,7 +26,7 @@ public class GameManager : MonoBehaviour {
 
     List<int> activeTouches;
     List<Puck> selectedPucks;
-    float touchRadius = 0.15f;
+    float touchRadius = 0.175f;
 
     public int team1Wins;
     public int team2Wins;
@@ -126,6 +126,7 @@ public class GameManager : MonoBehaviour {
             }
         }
         CheckWin();
+        ChangeMusicPitch();
     }
     void CheckWin() {
         if (pucksTeam2.Count == pucksToWin) {
@@ -138,6 +139,15 @@ public class GameManager : MonoBehaviour {
             playing = false;
             team2Wins += 1;
             UIManager.Instance.ShowWinScreen(false);
+        }
+    }
+    void ChangeMusicPitch() {
+        if (pucksTeam1.Count == 2 || pucksTeam2.Count == 2) {
+            AudioManager.Instance.PucksLeft2();
+        } else if (pucksTeam1.Count == 1 || pucksTeam2.Count == 1) {
+            AudioManager.Instance.PucksLeft1();
+        } else {
+            AudioManager.Instance.ResetMusicTempo();
         }
     }
     #endregion

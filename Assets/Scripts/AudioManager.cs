@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using System.Collections;
+using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
 
@@ -31,6 +32,7 @@ public class AudioManager : MonoBehaviour {
         ChangeMusicVol(PlayerPrefs.GetFloat("MusicVol", 1f));
         ChangeSfxVol(PlayerPrefs.GetFloat("SfxVol", 1f));
         musicAudioSource.clip = menuThemeSong;
+        musicAudioSource.pitch = 0.85f;
         musicAudioSource.Play();
 
         musicVolSlider.value = musicVol;
@@ -58,5 +60,25 @@ public class AudioManager : MonoBehaviour {
 
     public void PlayButtonClick() {
         sfxAudioSource.PlayOneShot(buttonClick);
+    }
+
+    public void ResetMusicTempo() {
+        StartCoroutine(SwitchTempo(musicAudioSource.pitch, .85f));
+    }
+    public void PucksLeft2() {
+        StartCoroutine(SwitchTempo(musicAudioSource.pitch, .95f));
+    }
+    public void PucksLeft1() {
+        StartCoroutine(SwitchTempo(musicAudioSource.pitch, 1f));
+    }
+
+
+    private IEnumerator SwitchTempo(float valueFrom, float valueTo) {
+        float t = 0f;
+        while (t <= 1f) {
+            musicAudioSource.pitch = Mathf.Lerp(valueFrom, valueTo, t);
+            t += 0.1f;
+            yield return new WaitForSeconds(0.01f);
+        }
     }
 }
