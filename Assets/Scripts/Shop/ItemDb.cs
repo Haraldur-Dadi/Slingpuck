@@ -33,18 +33,21 @@ public class ItemDb : MonoBehaviour {
         SaveManager.SaveItemsInfo();
     }
     public void EquipItem(int cat, int id) {
-        EquippedItems[cat] = id;
-        if (cat == 1) {
+        EquippedItems[cat] = Items[id].id;
+        if (cat == 0) {
+            GameManager.Instance.ChangePuckAppearance(Items[id].sprite);
+        } else if (cat == 1) {
             SetBoardSprite();
         }
         SaveManager.SaveItemsInfo();
     }
     private void SetBoardSprite() {
         int id = EquippedItems[1];
-        Board.sprite = Items[id].sprite;
+        Item item = Items.Find(i => i.id == id);
+        Board.sprite = item.sprite;
     }
     public bool IsEquipped(int cat, int id) {
-        return EquippedItems[cat] == id;
+        return EquippedItems[cat] == Items[id].id;
     }
     public int[] CategoryIndexes(int cat) {
         // Return start and end indexes of category
@@ -90,8 +93,9 @@ public class ItemDb : MonoBehaviour {
             EquippedItems = new int[]{0, PucksLength, StadiumsLength};
         } else {
             // Unlock items
-            for (int i = 0; i < Items.Count; i++) {
-                Items[i].isUnlocked = info.unlocked[i];
+            foreach (int id in info.unlocked) {
+                Item item = Items.Find(i => i.id == id);
+                item.isUnlocked = true;
             }
             // Equip items
             EquippedItems = info.equippedItems;

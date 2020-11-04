@@ -2,17 +2,23 @@ using System.Collections.Generic;
 
 [System.Serializable]
 public class ItemsInfo {
-    public bool[] unlocked;
+    private List<int> isUnlocked;
+    public int[] unlocked;
     public int[] equippedItems;
 
     public ItemsInfo () {
-        unlocked = new bool[ItemDb.Instance.Items.Count];
-        equippedItems = ItemDb.Instance.EquippedItems;
-        
-        int index = 0;
+        isUnlocked = new List<int>();
         foreach (Item item in ItemDb.Instance.Items) {
-            unlocked[index] = ItemDb.Instance.Items[index].isUnlocked;
-            index += 1;
+            if (item.isUnlocked)
+                isUnlocked.Add(item.id);
         }
+        int index = 0;
+        unlocked = new int[isUnlocked.Count];
+        foreach (int id in isUnlocked) {
+            unlocked[index] = id;
+            index++;
+        }
+
+        equippedItems = ItemDb.Instance.EquippedItems;
     }
 }
