@@ -68,16 +68,16 @@ public class ItemDb : MonoBehaviour {
     private void BuildItemDb() {
         Items = new List<Item>() {
             // Pucks
-            new Item("Puck", 0),
-            new Item("Ice Hockey Puck", 100),
-            new Item("Football", 50),
-            new Item("Basketball", 250),
+            new Item(0, "Puck", 0),
+            new Item(1, "Ice Hockey Puck", 100),
+            new Item(2, "Football", 50),
+            new Item(3, "Basketball", 250),
             // Stadiums
-            new Item("Stadium", 0),
-            new Item("Ice Hockey Rink", 350),
-            new Item("Football Stadium", 500),
+            new Item(4, "Stadium", 0),
+            new Item(5, "Ice Hockey Rink", 350),
+            new Item(6, "Football Stadium", 500),
             // Slingshots
-            new Item("Slingshot", 0)
+            new Item(7, "Slingshot", 0)
         };
     }
     private void LoadData() {
