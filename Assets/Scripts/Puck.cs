@@ -60,7 +60,7 @@ public class Puck : MonoBehaviour {
         return team1;
     }
     private void OnCollisionEnter2D(Collision2D other) {
-        if (other.relativeVelocity.magnitude > 2.5f && hitTimer > hitTime) {
+        if (other.relativeVelocity.magnitude > 1.5f && hitTimer > hitTime) {
             if (other.gameObject.CompareTag("Puck") || other.gameObject.CompareTag("Border")) {
                 AudioManager.Instance.PlayPuckCollission();
                 hitTimer = 0f;
