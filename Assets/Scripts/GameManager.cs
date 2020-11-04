@@ -47,6 +47,12 @@ public class GameManager : MonoBehaviour {
         }
         SpawnPucks();
     }
+    public void ChangePuckAppearance(Sprite s) {
+        GameObject[] pucks = GameObject.FindGameObjectsWithTag("Puck");
+        foreach (GameObject puck in pucks) {
+            puck.GetComponent<SpriteRenderer>().sprite = s; 
+        }
+    }
     private void SpawnPucks() {
         foreach (Transform spawnPoint in puckSpawnPoints) {
             Instantiate(puck, spawnPoint.position, Quaternion.identity);
