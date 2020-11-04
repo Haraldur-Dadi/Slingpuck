@@ -16,62 +16,50 @@ public class AudioManager : MonoBehaviour {
     #endregion
     public AudioSource musicAudioSource;
     public AudioSource sfxAudioSource;
-    public AudioClip menuThemeSong;
     public AudioClip buttonClick;
-
-    public float musicVol;
-    public float sfxVol;
+    public AudioClip puckCollission;
+    public AudioClip slingshotRelease;
 
     public Slider musicVolSlider;
-    public TextMeshProUGUI musicVolTxt;
-
     public Slider sfxVolSlider;
-    public TextMeshProUGUI sfxVolTxt;
 
     private void Start() {
-        ChangeMusicVol(PlayerPrefs.GetFloat("MusicVol", 1f));
-        ChangeSfxVol(PlayerPrefs.GetFloat("SfxVol", 1f));
-        musicAudioSource.clip = menuThemeSong;
-        musicAudioSource.pitch = 0.85f;
-        musicAudioSource.Play();
-
-        musicVolSlider.value = musicVol;
-        sfxVolSlider.value = sfxVol;
-
         musicVolSlider.onValueChanged.AddListener(delegate { ChangeMusicVol(musicVolSlider.value); });
         sfxVolSlider.onValueChanged.AddListener(delegate { ChangeSfxVol(sfxVolSlider.value); });
+
+        musicVolSlider.value = PlayerPrefs.GetFloat("MusicVol", 1f);
+        sfxVolSlider.value = PlayerPrefs.GetFloat("SfxVol", 1f);
     }
 
     public void ChangeMusicVol(float vol) {
-        musicVol = Mathf.Round(vol * 100) / 100;
-        musicVolTxt.text = (int) (musicVol * 100) + "%";
-        musicAudioSource.volume = musicVol;
-
-        PlayerPrefs.SetFloat("MusicVol", musicVol);
+        musicAudioSource.volume = Mathf.Round(vol * 100) / 100;
+        PlayerPrefs.SetFloat("MusicVol", musicAudioSource.volume);
     }
 
     public void ChangeSfxVol(float vol) {
-        sfxVol = Mathf.Round(vol * 100) / 100;
-        sfxVolTxt.text = (int)(sfxVol * 100) + "%";
-        sfxAudioSource.volume = sfxVol;
-
-        PlayerPrefs.SetFloat("SfxVol", sfxVol);
+        sfxAudioSource.volume = Mathf.Round(vol * 100) / 100;
+        PlayerPrefs.SetFloat("SfxVol", sfxAudioSource.volume);
     }
 
     public void PlayButtonClick() {
         sfxAudioSource.PlayOneShot(buttonClick);
     }
-
-    public void ResetMusicTempo() {
-        StartCoroutine(SwitchTempo(musicAudioSource.pitch, .85f));
+    public void PlayPuckCollission() {
+        sfxAudioSource.PlayOneShot(puckCollission);
     }
-    public void PucksLeft2() {
-        StartCoroutine(SwitchTempo(musicAudioSource.pitch, .95f));
-    }
-    public void PucksLeft1() {
-        StartCoroutine(SwitchTempo(musicAudioSource.pitch, 1f));
+    public void PlaySlingshotRelease() {
+        sfxAudioSource.PlayOneShot(slingshotRelease);
     }
 
+    public void ChangeMusicPitch(int team1, int team2) {
+        if (team1 == 2 || team2 == 2) {
+            StartCoroutine(SwitchTempo(musicAudioSource.pitch, .95f));
+        } else if (team1 == 1 || team2 == 1) {
+            StartCoroutine(SwitchTempo(musicAudioSource.pitch, 1f));
+        } else {
+            StartCoroutine(SwitchTempo(musicAudioSource.pitch, .85f));
+        }
+    }
 
     private IEnumerator SwitchTempo(float valueFrom, float valueTo) {
         float t = 0f;
