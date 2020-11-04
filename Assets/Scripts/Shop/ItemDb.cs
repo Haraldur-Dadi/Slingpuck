@@ -43,7 +43,7 @@ public class ItemDb : MonoBehaviour {
         int id = EquippedItems[1];
         Board.sprite = Items[id].sprite;
     }
-    public bool IsEquipped (int cat, int id) {
+    public bool IsEquipped(int cat, int id) {
         return EquippedItems[cat] == id;
     }
     public int[] CategoryIndexes(int cat) {
@@ -84,24 +84,16 @@ public class ItemDb : MonoBehaviour {
         // Load Data
         ItemsInfo info = SaveManager.LoadItemsInfo();
         // Set info
-            // Unlock items
-        for (int i = 0; i < Items.Count; i++) {
-            if (info == null) {
-                // Auto unlock "standard" items
-                if (i == 0 || i == PucksLength || i == StadiumsLength) {
-                    Items[i].isUnlocked = true;
-                } else {
-                    Items[i].isUnlocked = false;
-                }
-            } else {
-                Items[i].isUnlocked = info.unlocked[i];
-            }
-        }
-            // Equip items
         if (info == null) {
-            // Equip standard items
+            // Auto unlock "standard" items and equip them
+            Items[0].isUnlocked =  Items[PucksLength].isUnlocked = Items[StadiumsLength].isUnlocked = true;
             EquippedItems = new int[]{0, PucksLength, StadiumsLength};
         } else {
+            // Unlock items
+            for (int i = 0; i < Items.Count; i++) {
+                Items[i].isUnlocked = info.unlocked[i];
+            }
+            // Equip items
             EquippedItems = info.equippedItems;
         }
     }
