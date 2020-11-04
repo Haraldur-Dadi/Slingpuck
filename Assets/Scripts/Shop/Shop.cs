@@ -109,6 +109,11 @@ public class Shop : MonoBehaviour {
     private void UpdateSelectedItemUI() {
         itemNameTxt.text = ItemDb.Instance.Items[selectedItemId].name;
         itemImg.sprite = ItemDb.Instance.Items[selectedItemId].sprite;
+        if (catId == 0) {
+            itemImg.rectTransform.sizeDelta = new Vector2(300, 300);
+        } else if (catId == 1) {
+            itemImg.rectTransform.sizeDelta = new Vector2(300, 550);
+        }
 
         if (ItemDb.Instance.IsEquipped(catId, selectedItemId)) {
             equipBtn.SetActive(false);
