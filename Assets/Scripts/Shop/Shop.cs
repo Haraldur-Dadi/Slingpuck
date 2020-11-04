@@ -4,6 +4,7 @@ using UnityEngine.UI;
 using TMPro;
 
 public class Shop : MonoBehaviour {
+    private int catId;
     private int selectedItemId;
 
     // Selecting category buttons
@@ -12,9 +13,8 @@ public class Shop : MonoBehaviour {
     public Button slingshotBtn;
 
     // Selecting item buttons
-    public GameObject puckSelectionBtns;
-    public GameObject stadiumSelectionBtns;
-    public GameObject slingshotSelectionBtns;
+    public Transform itemSelectParent;
+    public GameObject itemSelectBtn;
 
     // Base sprites for category item image
     public Sprite puckBaseSprite;
@@ -31,44 +31,59 @@ public class Shop : MonoBehaviour {
 
     private void Start() {
         SelectCategory(0);
+        puckBtn.onClick.AddListener(() => AudioManager.Instance.PlayButtonClick());
+        stadiumBtn.onClick.AddListener(() => AudioManager.Instance.PlayButtonClick());
+        slingshotBtn.onClick.AddListener(() => AudioManager.Instance.PlayButtonClick());
     }
 
     public void SelectCategory(int cat) {
+        catId = cat;
         if (cat == 0) {
             // Selecting pucks
             itemImg.sprite = puckBaseSprite;
             puckBtn.interactable = false;
-            puckSelectionBtns.SetActive(true);
-
             stadiumBtn.interactable = true;
-            stadiumSelectionBtns.SetActive(false);
-
             slingshotBtn.interactable = true;
-            slingshotSelectionBtns.SetActive(false);
         } else if (cat == 1) {
             // Selecting stadium
             itemImg.sprite = stadiumBaseSprite;
             puckBtn.interactable = true;
-            puckSelectionBtns.SetActive(false);
-
             stadiumBtn.interactable = false;
-            stadiumSelectionBtns.SetActive(true);
-
             slingshotBtn.interactable = true;
-            slingshotSelectionBtns.SetActive(false);
         } else {
             // Selecting slingshots
             itemImg.sprite = slingshotBaseSprite;
             puckBtn.interactable = true;
-            puckSelectionBtns.SetActive(false);
-            
             stadiumBtn.interactable = true;
-            stadiumSelectionBtns.SetActive(false);
-
             slingshotBtn.interactable = false;
-            slingshotSelectionBtns.SetActive(true);
         }
-        SelectItem(0);
+        CreateSelectItemButtons();
+    }
+    private void CreateSelectItemButtons() {
+        // Remove all previous buttons
+        int childs = itemSelectParent.childCount;
+        for (int i = childs-1; i>=0; i--) {
+            Destroy(itemSelectParent.GetChild(i).gameObject);
+        }
+        // Instantiate new buttons
+        int[] indexes = ItemDb.Instance.CategoryIndexes(catId);
+        for (int i = indexes[0]; i < indexes[1]; i++) {
+            InstatiateSelectBtn(i);
+        }
+        SelectItem(indexes[0]);
+    }
+    private void InstatiateSelectBtn(int id) {
+        // Create new button
+        GameObject go = Instantiate(itemSelectBtn, itemSelectParent);
+        // Add listener
+        var button = go.GetComponent<Button>();
+        button.onClick.AddListener(() => {
+            AudioManager.Instance.PlayButtonClick();
+            SelectItem(id);
+        });
+        // Change sprite
+        var img = go.GetComponent<Image>();
+        img.sprite = ItemDb.Instance.Items[id].sprite;
     }
 
     public void SelectItem(int id) {
@@ -79,13 +94,15 @@ public class Shop : MonoBehaviour {
 
     public void BuyItem() {
         // Buy item
+        AudioManager.Instance.PlayButtonClick();
         ItemDb.Instance.UnlockItem(selectedItemId);
         SelectItem(selectedItemId);
     }
 
     public void EquipItem() {
         // Equip this item
-        ItemDb.Instance.EquipItem(selectedItemId);
+        AudioManager.Instance.PlayButtonClick();
+        ItemDb.Instance.EquipItem(catId, selectedItemId);
         UpdateSelectedItemUI();
     }
 
@@ -93,7 +110,7 @@ public class Shop : MonoBehaviour {
         itemNameTxt.text = ItemDb.Instance.Items[selectedItemId].name;
         itemImg.sprite = ItemDb.Instance.Items[selectedItemId].sprite;
 
-        if (ItemDb.Instance.IsEquipped(selectedItemId)) {
+        if (ItemDb.Instance.IsEquipped(catId, selectedItemId)) {
             equipBtn.SetActive(false);
             buyBtn.SetActive(false);
             selectedTxt.SetActive(true);
