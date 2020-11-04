@@ -10,6 +10,7 @@ public class GameManager : MonoBehaviour {
             Instance = this;
             playing = false;
             pucksToWin = puckSpawnPoints.Length;
+            SpawnPucks();
         } else {
             Destroy(this);
         }
@@ -39,10 +40,16 @@ public class GameManager : MonoBehaviour {
     public void SinglePlayer(bool single) {
         player1 = single;
     }
-    void CleanBoard() {
+    private void CleanBoard() {
         GameObject[] pucks = GameObject.FindGameObjectsWithTag("Puck");
         foreach (GameObject puck in pucks) {
             Destroy(puck);
+        }
+        SpawnPucks();
+    }
+    private void SpawnPucks() {
+        foreach (Transform spawnPoint in puckSpawnPoints) {
+            Instantiate(puck, spawnPoint.position, Quaternion.identity);
         }
     }
     public void StartNewGame() {
@@ -52,9 +59,6 @@ public class GameManager : MonoBehaviour {
         pucksTeam2 = new List<Puck>();
         ReleasePuck(true);
         ReleasePuck(false);
-        foreach (Transform spawnPoint in puckSpawnPoints) {
-            Instantiate(puck, spawnPoint.position, Quaternion.identity);
-        }
         playing = true;
 
         if (player1)
