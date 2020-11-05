@@ -3,11 +3,11 @@
 public class Item {
     public int id;
     public string name;
-    public float cost;
+    public int cost;
     public bool isUnlocked;
     public Sprite sprite;
 
-    public Item (int id, string name, float cost) {
+    public Item (int id, string name, int cost) {
         this.id = id;
         this.name = name;
         this.cost = cost;

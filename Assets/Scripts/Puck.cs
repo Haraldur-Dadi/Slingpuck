@@ -31,6 +31,7 @@ public class Puck : MonoBehaviour {
     }
     public void ChangePos(Vector2 pos) {
         rb.sharedMaterial = null;
+        rb.velocity = Vector2.zero;
         moving = true;
         posToMove = pos;
 

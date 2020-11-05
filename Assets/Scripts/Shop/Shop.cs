@@ -91,14 +91,13 @@ public class Shop : MonoBehaviour {
         selectedItemId = id;
         UpdateSelectedItemUI();
     }
-
     public void BuyItem() {
         // Buy item
         AudioManager.Instance.PlayButtonClick();
+        CurrencyManager.Instance.SubtractGold(ItemDb.Instance.Items[selectedItemId].cost);
         ItemDb.Instance.UnlockItem(selectedItemId);
         SelectItem(selectedItemId);
     }
-
     public void EquipItem() {
         // Equip this item
         AudioManager.Instance.PlayButtonClick();
@@ -106,13 +105,13 @@ public class Shop : MonoBehaviour {
         UpdateSelectedItemUI();
     }
 
-    private void UpdateSelectedItemUI() {
+    public void UpdateSelectedItemUI() {
         itemNameTxt.text = ItemDb.Instance.Items[selectedItemId].name;
         itemImg.sprite = ItemDb.Instance.Items[selectedItemId].sprite;
         if (catId == 0) {
             itemImg.rectTransform.sizeDelta = new Vector2(300, 300);
         } else if (catId == 1) {
-            itemImg.rectTransform.sizeDelta = new Vector2(300, 550);
+            itemImg.rectTransform.sizeDelta = new Vector2(300, 600);
         }
 
         if (ItemDb.Instance.IsEquipped(catId, selectedItemId)) {
@@ -126,6 +125,7 @@ public class Shop : MonoBehaviour {
         } else {
             buyAmountTxt.text = ItemDb.Instance.Items[selectedItemId].cost.ToString();
             equipBtn.SetActive(false);
+            buyBtn.GetComponent<Button>().interactable = CurrencyManager.Instance.CanBuy(ItemDb.Instance.Items[selectedItemId].cost);
             buyBtn.SetActive(true);
             selectedTxt.SetActive(false);
         }

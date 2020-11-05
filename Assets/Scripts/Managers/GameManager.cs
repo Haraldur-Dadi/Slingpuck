@@ -68,7 +68,7 @@ public class GameManager : MonoBehaviour {
         playing = true;
 
         if (player1)
-            AiManager.Instance.StartAIBeforeGame();
+            Ai.Instance.StartAIBeforeGame();
     }
 
     private void Update() {
@@ -142,15 +142,21 @@ public class GameManager : MonoBehaviour {
     private void CheckWin() {
         if (pucksTeam2.Count == pucksToWin) {
             // Team 1 wins
+            if (player1)
+                CurrencyManager.Instance.AddGold(10);
             StartCoroutine(SlowMoEnding(true));
         } else if (pucksTeam1.Count == pucksToWin) {
             // Team 2 wins
+            if (player1)
+                CurrencyManager.Instance.AddGold(5);
             StartCoroutine(SlowMoEnding(false));
         }
     }
     private IEnumerator SlowMoEnding(bool team1Won) {
         // Slows down time, then speeds it back up
         playing = false;
+        if (!player1)
+            CurrencyManager.Instance.AddGold(5);
 
         float initalValue = Time.timeScale;
         Time.timeScale = slowDownFactor;
@@ -159,6 +165,7 @@ public class GameManager : MonoBehaviour {
 
         Time.timeScale = initalValue;
         Time.fixedDeltaTime = Time.timeScale * .02f;
+        AdManager.Instance.ShowVideoAd();
         UIManager.Instance.ShowWinScreen(team1Won);
     }
 }

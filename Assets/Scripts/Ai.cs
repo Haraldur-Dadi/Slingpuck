@@ -1,49 +1,56 @@
 ﻿using System.Collections;
 using UnityEngine;
 
-public class AiManager : MonoBehaviour {
+public class Ai : MonoBehaviour {
     #region Instance
-    public static AiManager Instance;
+    public static Ai Instance;
     private void Awake() {
         if (Instance == null) {
             Instance = this;
+            PlayerInfo info = SaveManager.LoadPlayerInfo();
+            skillRank = (info is null) ? 0.0f : info.skillRank;
         } else {
             Destroy(this);
         }
     }
     #endregion
 
-    bool canPickup;
-
-    float moveInterval;
-    float moveIntervalMax = 1f;
-    Vector2 startPos;
-    Vector2 movePos;
-    Puck selectedPuck;
+    private bool canPickup;
+    public float skillRank;
+    private float moveInterval;
+    private float moveIntervalMax = 1f;
+    private Vector2 startPos;
+    private Vector2 movePos;
+    private Puck selectedPuck;
     public LayerMask puckMask;
 
     // Base values
-    Vector2 baseOptimalShotZone = new Vector2(0.65f, 4.5f);
-    float baseMoveSpeed = 3.5f;
-    float baseSecBetweenMoves = 3.5f;
+    private Vector2 baseOptimalShotZone = new Vector2(0.65f, 4.5f);
+    private float baseMoveSpeed = 3.5f;
+    private float baseSecBetweenMoves = 3.5f;
     // Determined by skill rank
-    Vector2 optimalShotZone;
-    float moveSpeed;
-    float secBetweenMoves;
+    public Vector2 optimalShotZone;
+    public float moveSpeed;
+    public float secBetweenMoves;
 
+    public float SkillRank() { return skillRank; }
+    public void ChangeDifficulty(bool playerWon) {
+        // Change skill rank by +-0.2 based on if he won/lost
+        skillRank += (playerWon) ? 0.2f : -0.2f;
+        skillRank = Mathf.Clamp(skillRank, 0f, 10f);
+        SaveManager.SavePlayerInfo();
+    }
     public void SelectDifficulty() {
         // Skill rank is earned by beating the ai, and can be at most 10
-        float skillRank = PlayerPrefs.GetFloat("SkillRank", 0f);
-
         optimalShotZone = new Vector2(baseOptimalShotZone.x - ((skillRank/10f)*5f), baseOptimalShotZone.y + (skillRank/10f));
-        moveSpeed = baseMoveSpeed + skillRank;
-        secBetweenMoves = baseSecBetweenMoves - skillRank;
+        moveSpeed = baseMoveSpeed + (skillRank/4f);
+        secBetweenMoves = baseSecBetweenMoves - (skillRank/5f);
     }
     public void StartAIBeforeGame() {
         SelectDifficulty();
         ReleasePuck();
     }
-    Puck PuckInWay(Vector2 startPos, Vector2 endPos) {
+    private Puck PuckInWay(Vector2 startPos, Vector2 endPos) {
         RaycastHit2D hit = Physics2D.Linecast(startPos, endPos, puckMask);
         if (hit) {
             Puck hitPuck = hit.collider.GetComponent<Puck>();
@@ -52,12 +59,12 @@ public class AiManager : MonoBehaviour {
         }
         return null;
     }
-    void ChoosePosToMove() {
+    private void ChoosePosToMove() {
         // Chooses position to move the puck towards
         movePos = optimalShotZone;
         movePos.x = Random.Range(-optimalShotZone.x, optimalShotZone.x);
     }
-    void FixedUpdate() {
+    private void FixedUpdate() {
         // AI for singleplayer
         if (GameManager.Instance.playing && GameManager.Instance.player1 && canPickup) {
             if (selectedPuck == null) {
@@ -73,7 +80,7 @@ public class AiManager : MonoBehaviour {
             }
         }
     }
-    void PickUpPuck() {
+    private void PickUpPuck() {
         // Choose a puck on ai half
         if (GameManager.Instance.pucksTeam2.Count > 0) {
             // Check if there is a puck blocking the middle, then choose it
@@ -95,13 +102,13 @@ public class AiManager : MonoBehaviour {
             startPos = selectedPuck.GetPos();
         }
     }
-    void MovePuck() {
+    private void MovePuck() {
         // Moves selected puck towards movePos
         Vector2 tmpMovePos = Vector2.Lerp(startPos, movePos, moveInterval);
         moveInterval += Time.fixedDeltaTime * moveSpeed;
         selectedPuck.ChangePos(tmpMovePos);
     }
-    void ReleasePuck() {
+    private void ReleasePuck() {
         // Releases puck and starts wait between moves
         if (selectedPuck)
             selectedPuck.StopMove();
@@ -109,7 +116,7 @@ public class AiManager : MonoBehaviour {
         selectedPuck = null;
         StartCoroutine(WaitBetweenMoves());
     }
-    IEnumerator WaitBetweenMoves() {
+    private IEnumerator WaitBetweenMoves() {
         yield return new WaitForSeconds(secBetweenMoves);
         canPickup = true;
     }
