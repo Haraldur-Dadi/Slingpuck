@@ -142,13 +142,17 @@ public class GameManager : MonoBehaviour {
     private void CheckWin() {
         if (pucksTeam2.Count == pucksToWin) {
             // Team 1 wins
-            if (player1)
+            if (player1) {
                 CurrencyManager.Instance.AddGold(10);
+                Ai.Instance.ChangeDifficulty(true);
+            }
             StartCoroutine(SlowMoEnding(true));
         } else if (pucksTeam1.Count == pucksToWin) {
             // Team 2 wins
-            if (player1)
+            if (player1) {
                 CurrencyManager.Instance.AddGold(5);
+                Ai.Instance.ChangeDifficulty(false);
+            }
             StartCoroutine(SlowMoEnding(false));
         }
     }

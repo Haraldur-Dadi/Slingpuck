@@ -41,7 +41,7 @@ public class AdManager : MonoBehaviour, IUnityAdsListener {
     public void OnUnityAdsDidError(string message) {}
     public void OnUnityAdsDidFinish(string placementId, ShowResult showResult) {
         if (placementId == rewardVideoID && showResult == ShowResult.Finished) {
-            CurrencyManager.Instance.AddGold(25);
+            CurrencyManager.Instance.AddGold(50);
         }
     }
 }

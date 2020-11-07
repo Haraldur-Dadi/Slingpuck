@@ -6,7 +6,7 @@ public class ItemDb : MonoBehaviour {
     public List<Item> Items;
     public int[] EquippedItems; // Puck, Stadium, Slingshot
     private int PucksLength = 4;
-    private int StadiumsLength = 3;
+    private int StadiumsLength = 4;
     private int SlingshotsLength = 1;
 
     public SpriteRenderer Board;
@@ -72,13 +72,14 @@ public class ItemDb : MonoBehaviour {
         Items = new List<Item>() {
             // Pucks
             new Item(0, "Puck", 0),
-            new Item(1, "Ice Hockey Puck", 100),
-            new Item(2, "Football", 50),
-            new Item(3, "Basketball", 250),
+            new Item(1, "Ice Hockey Puck", 150),
+            new Item(2, "Football", 150),
+            new Item(3, "Basketball", 200),
             // Stadiums
             new Item(4, "Stadium", 0),
-            new Item(5, "Ice Hockey Rink", 350),
-            new Item(6, "Football Stadium", 500),
+            new Item(5, "Ice Hockey Rink", 250),
+            new Item(6, "Football Stadium", 275),
+            new Item(8, "Basketball Court", 400),
             // Slingshots
             new Item(7, "Slingshot", 0)
         };

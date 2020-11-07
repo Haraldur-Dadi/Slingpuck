@@ -19,32 +19,30 @@ public class Ai : MonoBehaviour {
     public float skillRank;
     private float moveInterval;
     private float moveIntervalMax = 1f;
+    private float moveSpeed = 4f;
     private Vector2 startPos;
     private Vector2 movePos;
     private Puck selectedPuck;
     public LayerMask puckMask;
 
     // Base values
-    private Vector2 baseOptimalShotZone = new Vector2(0.65f, 4.5f);
-    private float baseMoveSpeed = 3.5f;
-    private float baseSecBetweenMoves = 3.5f;
+    private Vector2 baseOptimalShotZone = new Vector2(1.5f, 4.5f);
+    private float baseSecBetweenMoves = 4f;
     // Determined by skill rank
     public Vector2 optimalShotZone;
-    public float moveSpeed;
     public float secBetweenMoves;
 
     public float SkillRank() { return skillRank; }
     public void ChangeDifficulty(bool playerWon) {
-        // Change skill rank by +-0.2 based on if he won/lost
-        skillRank += (playerWon) ? 0.2f : -0.2f;
-        skillRank = Mathf.Clamp(skillRank, 0f, 10f);
+        // Change skill rank by +-0.02 based on if player won/lost
+        skillRank += (playerWon) ? 0.02f : -0.02f;
+        skillRank = Mathf.Clamp(skillRank, 0f, 1f);
         SaveManager.SavePlayerInfo();
     }
     public void SelectDifficulty() {
-        // Skill rank is earned by beating the ai, and can be at most 10
-        optimalShotZone = new Vector2(baseOptimalShotZone.x - ((skillRank/10f)*5f), baseOptimalShotZone.y + (skillRank/10f));
-        moveSpeed = baseMoveSpeed + (skillRank/4f);
-        secBetweenMoves = baseSecBetweenMoves - (skillRank/5f);
+        // Skill rank is earned by beating the ai, and can be at most 1
+        optimalShotZone = new Vector2(baseOptimalShotZone.x - (skillRank*1.35f), baseOptimalShotZone.y + (skillRank/2f));
+        secBetweenMoves = baseSecBetweenMoves - (skillRank*1.5f);
     }
     public void StartAIBeforeGame() {
         SelectDifficulty();
@@ -63,11 +61,13 @@ public class Ai : MonoBehaviour {
         // Chooses position to move the puck towards
         movePos = optimalShotZone;
         movePos.x = Random.Range(-optimalShotZone.x, optimalShotZone.x);
+        Debug.Log(movePos.x);
     }
     private void FixedUpdate() {
         // AI for singleplayer
         if (GameManager.Instance.playing && GameManager.Instance.player1 && canPickup) {
             if (selectedPuck == null) {
+                Debug.Log("Pickup");
                 ChoosePosToMove();
                 PickUpPuck();
                 moveInterval = 0f;
@@ -92,12 +92,7 @@ public class Ai : MonoBehaviour {
                 int index = Random.Range(0, GameManager.Instance.pucksTeam2.Count - 1);
                 Puck tmpSelectedPuck = GameManager.Instance.pucksTeam2[index];
                 Puck puckInWay = PuckInWay(movePos, tmpSelectedPuck.GetPos());
-
-                if (tmpSelectedPuck == puckInWay) {
-                    selectedPuck = tmpSelectedPuck;
-                } else {
-                    selectedPuck = puckInWay;
-                }
+                selectedPuck = (tmpSelectedPuck == puckInWay) ? tmpSelectedPuck : puckInWay;
             }
             startPos = selectedPuck.GetPos();
         }
@@ -117,7 +112,9 @@ public class Ai : MonoBehaviour {
         StartCoroutine(WaitBetweenMoves());
     }
     private IEnumerator WaitBetweenMoves() {
+        Debug.Log("Waiting");
         yield return new WaitForSeconds(secBetweenMoves);
+        Debug.Log("Finished waiting");
         canPickup = true;
     }
 }
