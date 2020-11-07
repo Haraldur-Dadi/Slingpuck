@@ -61,13 +61,11 @@ public class Ai : MonoBehaviour {
         // Chooses position to move the puck towards
         movePos = optimalShotZone;
         movePos.x = Random.Range(-optimalShotZone.x, optimalShotZone.x);
-        Debug.Log(movePos.x);
     }
     private void FixedUpdate() {
         // AI for singleplayer
         if (GameManager.Instance.playing && GameManager.Instance.player1 && canPickup) {
             if (selectedPuck == null) {
-                Debug.Log("Pickup");
                 ChoosePosToMove();
                 PickUpPuck();
                 moveInterval = 0f;
@@ -112,9 +110,7 @@ public class Ai : MonoBehaviour {
         StartCoroutine(WaitBetweenMoves());
     }
     private IEnumerator WaitBetweenMoves() {
-        Debug.Log("Waiting");
         yield return new WaitForSeconds(secBetweenMoves);
-        Debug.Log("Finished waiting");
         canPickup = true;
     }
 }

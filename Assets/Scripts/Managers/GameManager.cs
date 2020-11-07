@@ -24,7 +24,7 @@ public class GameManager : MonoBehaviour {
     public Transform[] puckSpawnPoints;
     public List<Puck> pucksTeam1;
     public List<Puck> pucksTeam2;
-    private float touchRadius = 0.175f;
+    private float touchRadius = 0.185f;
 
     // SlowDown controls
     private float slowDownFactor = 0.05f;
