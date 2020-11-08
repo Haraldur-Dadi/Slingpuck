@@ -26,7 +26,7 @@ public class Ai : MonoBehaviour {
     public LayerMask puckMask;
 
     // Base values
-    private Vector2 baseOptimalShotZone = new Vector2(1.5f, 4.5f);
+    private Vector2 baseOptimalShotZone = new Vector2(1.25f, 4.5f);
     private float baseSecBetweenMoves = 4f;
     // Determined by skill rank
     public Vector2 optimalShotZone;
@@ -41,7 +41,7 @@ public class Ai : MonoBehaviour {
     }
     public void SelectDifficulty() {
         // Skill rank is earned by beating the ai, and can be at most 1
-        optimalShotZone = new Vector2(baseOptimalShotZone.x - (skillRank*1.35f), baseOptimalShotZone.y + (skillRank/2f));
+        optimalShotZone = new Vector2(baseOptimalShotZone.x - (skillRank*1.15f), baseOptimalShotZone.y + (skillRank/2f));
         secBetweenMoves = baseSecBetweenMoves - (skillRank*1.5f);
     }
     public void StartAIBeforeGame() {

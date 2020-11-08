@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using TMPro;
 
 public class GameManager : MonoBehaviour {
     #region Instance
@@ -10,7 +11,7 @@ public class GameManager : MonoBehaviour {
             Instance = this;
             playing = false;
             pucksToWin = puckSpawnPoints.Length;
-            SpawnPucks();
+            SpawnObjects();
         } else {
             Destroy(this);
         }
@@ -21,10 +22,14 @@ public class GameManager : MonoBehaviour {
     private int pucksToWin;
     public bool player1;
     public GameObject puck;
+    public GameObject rope;
     public Transform[] puckSpawnPoints;
     public List<Puck> pucksTeam1;
     public List<Puck> pucksTeam2;
     private float touchRadius = 0.185f;
+
+    public TextMeshProUGUI finalTxt;
+    public TextMeshProUGUI goldEarnedTxt;
 
     // SlowDown controls
     private float slowDownFactor = 0.05f;
@@ -45,7 +50,11 @@ public class GameManager : MonoBehaviour {
         foreach (GameObject puck in pucks) {
             Destroy(puck);
         }
-        SpawnPucks();
+        GameObject[] ropes = GameObject.FindGameObjectsWithTag("Rope");
+        foreach (GameObject rope in ropes) {
+            Destroy(rope);
+        }
+        SpawnObjects();
     }
     public void ChangePuckAppearance(Sprite s) {
         GameObject[] pucks = GameObject.FindGameObjectsWithTag("Puck");
@@ -53,10 +62,12 @@ public class GameManager : MonoBehaviour {
             puck.GetComponent<SpriteRenderer>().sprite = s; 
         }
     }
-    private void SpawnPucks() {
+    private void SpawnObjects() {
         foreach (Transform spawnPoint in puckSpawnPoints) {
             Instantiate(puck, spawnPoint.position, Quaternion.identity);
         }
+        Instantiate(rope, new Vector3(0, 4.25f, 0), Quaternion.identity);
+        Instantiate(rope, new Vector3(0, -4.25f, 0), Quaternion.identity);
     }
     public void StartNewGame() {
         UIManager.Instance.HideWinScreen();
@@ -142,26 +153,32 @@ public class GameManager : MonoBehaviour {
     private void CheckWin() {
         if (pucksTeam2.Count == pucksToWin) {
             // Team 1 wins
-            if (player1) {
-                CurrencyManager.Instance.AddGold(10);
-                Ai.Instance.ChangeDifficulty(true);
-            }
-            StartCoroutine(SlowMoEnding(true));
+            GameOver(true);
         } else if (pucksTeam1.Count == pucksToWin) {
             // Team 2 wins
-            if (player1) {
-                CurrencyManager.Instance.AddGold(5);
-                Ai.Instance.ChangeDifficulty(false);
-            }
-            StartCoroutine(SlowMoEnding(false));
+            GameOver(false);
         }
+    }
+    private void GameOver(bool team1Won) {
+        playing = false;
+        if (player1 && team1Won) {
+            CurrencyManager.Instance.AddGold(10);
+            Ai.Instance.ChangeDifficulty(true);
+            finalTxt.text = "You win";
+        } else {
+            if (player1) {
+                Ai.Instance.ChangeDifficulty(team1Won);
+                finalTxt.text = "You loose :(";
+            } else {
+                finalTxt.text = (team1Won) ? "Team 1 wins" : "Team 2 wins";
+            }
+            CurrencyManager.Instance.AddGold(5);
+        }
+        goldEarnedTxt.text = (player1 && team1Won) ? "+10" : "+5";
+        StartCoroutine(SlowMoEnding(team1Won));
     }
     private IEnumerator SlowMoEnding(bool team1Won) {
         // Slows down time, then speeds it back up
-        playing = false;
-        if (!player1)
-            CurrencyManager.Instance.AddGold(5);
-
         float initalValue = Time.timeScale;
         Time.timeScale = slowDownFactor;
         Time.fixedDeltaTime = Time.timeScale * .02f;

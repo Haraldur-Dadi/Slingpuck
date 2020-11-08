@@ -1,7 +1,7 @@
 ﻿using System.Collections;
 using UnityEngine;
 using UnityEngine.UI;
-using TMPro;
+using UnityEngine.SceneManagement;
 
 public class UIManager : MonoBehaviour {
     #region Instance
@@ -21,7 +21,6 @@ public class UIManager : MonoBehaviour {
     public GameObject settingsMenu;
     public GameObject shopMenu;
     public GameObject winScreen;
-    public TextMeshProUGUI winTxt;
 
     public Image settingsBtn;
     public Sprite settingsSprite;
@@ -60,11 +59,6 @@ public class UIManager : MonoBehaviour {
     }
     public void ShowWinScreen(bool team1Won) {
         winScreen.SetActive(true);
-        if (team1Won) {
-            winTxt.text = "Team 1 won";
-        } else {
-            winTxt.text = "Team 2 won";
-        }
     }
     public void HideWinScreen() {
         winScreen.SetActive(false);

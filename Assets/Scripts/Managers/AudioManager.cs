@@ -24,11 +24,12 @@ public class AudioManager : MonoBehaviour {
     public Slider sfxVolSlider;
 
     private void Start() {
-        musicVolSlider.onValueChanged.AddListener(delegate { ChangeMusicVol(musicVolSlider.value); });
-        sfxVolSlider.onValueChanged.AddListener(delegate { ChangeSfxVol(sfxVolSlider.value); });
-
         musicVolSlider.value = PlayerPrefs.GetFloat("MusicVol", 1f);
         sfxVolSlider.value = PlayerPrefs.GetFloat("SfxVol", 1f);
+        ChangeMusicVol(musicVolSlider.value);
+        ChangeSfxVol(sfxVolSlider.value);
+        musicVolSlider.onValueChanged.AddListener(delegate { ChangeMusicVol(musicVolSlider.value); });
+        sfxVolSlider.onValueChanged.AddListener(delegate { ChangeSfxVol(sfxVolSlider.value); });
     }
 
     public void ChangeMusicVol(float vol) {
