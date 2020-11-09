@@ -17,7 +17,7 @@ public class AdManager : MonoBehaviour, IUnityAdsListener {
         if (Instance == null) {
             Instance = this;
             Advertisement.AddListener(this);
-            Advertisement.Initialize(gameID, true);
+            Advertisement.Initialize(gameID);
             rewardAdsBtn.interactable = Advertisement.IsReady(rewardVideoID);
         }
     }
