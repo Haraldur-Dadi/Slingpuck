@@ -131,7 +131,7 @@ BoxCollider2D:
     adaptiveTiling: 0
   m_AutoTiling: 0
   serializedVersion: 2
-  m_Size: {x: 0.75, y: 0.15}
+  m_Size: {x: 0.75, y: 0.125}
   m_EdgeRadius: 0
 --- !u!233 &7357296145047490424
 HingeJoint2D:
@@ -312,7 +312,7 @@ BoxCollider2D:
     adaptiveTiling: 0
   m_AutoTiling: 0
   serializedVersion: 2
-  m_Size: {x: 0.75, y: 0.15}
+  m_Size: {x: 0.75, y: 0.125}
   m_EdgeRadius: 0
 --- !u!233 &7357296145236741353
 HingeJoint2D:
@@ -493,7 +493,7 @@ BoxCollider2D:
     adaptiveTiling: 0
   m_AutoTiling: 0
   serializedVersion: 2
-  m_Size: {x: 0.45, y: 0.15}
+  m_Size: {x: 0.45, y: 0.125}
   m_EdgeRadius: 0
 --- !u!233 &7357296145423210028
 HingeJoint2D:
@@ -674,7 +674,7 @@ BoxCollider2D:
     adaptiveTiling: 0
   m_AutoTiling: 0
   serializedVersion: 2
-  m_Size: {x: 0.75, y: 0.15}
+  m_Size: {x: 0.75, y: 0.125}
   m_EdgeRadius: 0
 --- !u!233 &7357296145490219753
 HingeJoint2D:
@@ -855,7 +855,7 @@ BoxCollider2D:
     adaptiveTiling: 0
   m_AutoTiling: 0
   serializedVersion: 2
-  m_Size: {x: 0.75, y: 0.15}
+  m_Size: {x: 0.75, y: 0.125}
   m_EdgeRadius: 0
 --- !u!233 &7357296145591250340
 HingeJoint2D:
@@ -1036,7 +1036,7 @@ BoxCollider2D:
     adaptiveTiling: 0
   m_AutoTiling: 0
   serializedVersion: 2
-  m_Size: {x: 0.75, y: 0.15}
+  m_Size: {x: 0.75, y: 0.125}
   m_EdgeRadius: 0
 --- !u!233 &7357296145638248522
 HingeJoint2D:
@@ -1288,7 +1288,7 @@ BoxCollider2D:
     adaptiveTiling: 0
   m_AutoTiling: 0
   serializedVersion: 2
-  m_Size: {x: 0.75, y: 0.15}
+  m_Size: {x: 0.75, y: 0.125}
   m_EdgeRadius: 0
 --- !u!233 &7357296146309108422
 HingeJoint2D:
@@ -1469,7 +1469,7 @@ BoxCollider2D:
     adaptiveTiling: 0
   m_AutoTiling: 0
   serializedVersion: 2
-  m_Size: {x: 0.75, y: 0.15}
+  m_Size: {x: 0.75, y: 0.125}
   m_EdgeRadius: 0
 --- !u!233 &7357296146331418440
 HingeJoint2D:
@@ -1650,7 +1650,7 @@ BoxCollider2D:
     adaptiveTiling: 0
   m_AutoTiling: 0
   serializedVersion: 2
-  m_Size: {x: 0.45, y: 0.15}
+  m_Size: {x: 0.45, y: 0.125}
   m_EdgeRadius: 0
 --- !u!233 &7357296146526756453
 HingeJoint2D:
@@ -1902,7 +1902,7 @@ BoxCollider2D:
     adaptiveTiling: 0
   m_AutoTiling: 0
   serializedVersion: 2
-  m_Size: {x: 0.75, y: 0.15}
+  m_Size: {x: 0.75, y: 0.125}
   m_EdgeRadius: 0
 --- !u!233 &7357296147104485145
 HingeJoint2D:
@@ -2059,8 +2059,8 @@ LineRenderer:
       m_RotationOrder: 4
     colorGradient:
       serializedVersion: 2
-      key0: {r: 0.735849, g: 0.735849, b: 0.735849, a: 1}
-      key1: {r: 0.7372549, g: 0.7372549, b: 0.7372549, a: 1}
+      key0: {r: 0.5566038, g: 0.5566038, b: 0.5566038, a: 1}
+      key1: {r: 0.5568628, g: 0.5568628, b: 0.5568628, a: 1}
       key2: {r: 1, g: 1, b: 1, a: 0}
       key3: {r: 0, g: 0, b: 0, a: 0}
       key4: {r: 0, g: 0, b: 0, a: 0}

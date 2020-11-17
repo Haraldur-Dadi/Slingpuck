@@ -23,8 +23,8 @@ public class AdManager : MonoBehaviour, IUnityAdsListener {
     }
 
     public void ShowVideoAd() {
-        // 2/3 chance to show an Ad, after every game
-        if (Random.Range(1, 4) > 1) {
+        // 2/5 chance to show an Ad, after every game
+        if (Random.Range(0, 5) > 2) {
             Advertisement.Show();
         }
     }

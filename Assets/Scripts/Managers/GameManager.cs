@@ -12,6 +12,7 @@ public class GameManager : MonoBehaviour {
             playing = false;
             pucksToWin = puckSpawnPoints.Length;
             SpawnObjects();
+            ChangeFx(true);
         } else {
             Destroy(this);
         }
@@ -30,6 +31,8 @@ public class GameManager : MonoBehaviour {
 
     public TextMeshProUGUI finalTxt;
     public TextMeshProUGUI goldEarnedTxt;
+    public ParticleSystem snowParticles;
+    public TextMeshProUGUI snowAllowed;
 
     // SlowDown controls
     private float slowDownFactor = 0.05f;
@@ -80,6 +83,29 @@ public class GameManager : MonoBehaviour {
 
         if (player1)
             Ai.Instance.StartAIBeforeGame();
+    }
+    public void ChangeFx(bool checkPlayerPrefs) {
+        if (checkPlayerPrefs) {
+            if (PlayerPrefs.GetInt("fxPlaying", 1) == 1) {
+                snowParticles.Play();
+                snowAllowed.text = "Yes";
+            } else {
+                snowAllowed.text = "No";
+            }
+        } else {
+            if (snowParticles.isPlaying) {
+                // Turn off
+                snowParticles.Stop();
+                snowParticles.Clear();
+                PlayerPrefs.SetInt("fxPlaying", 0);
+                snowAllowed.text = "No";
+            } else {
+                // Turn on
+                snowParticles.Play();
+                PlayerPrefs.SetInt("fxPlaying", 1);
+                snowAllowed.text = "Yes";
+            }
+        }
     }
 
     private void Update() {

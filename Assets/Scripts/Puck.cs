@@ -62,10 +62,16 @@ public class Puck : MonoBehaviour {
     }
     private void OnCollisionEnter2D(Collision2D other) {
         if (other.relativeVelocity.magnitude > 1.5f && hitTimer > hitTime) {
-            if (other.gameObject.CompareTag("Puck") || other.gameObject.CompareTag("Border")) {
+            if (other.gameObject.CompareTag("Puck")) {
+                if (other.gameObject.GetComponent<Puck>().team1 != team1) {
+                    // Loose control of puck if it collides with pucks from other team
+                    GameManager.Instance.ReleasePuck(team1);
+                }
+                
                 AudioManager.Instance.PlayPuckCollission();
                 hitTimer = 0f;
-                GameManager.Instance.ReleasePuck(team1);
+            } else if (other.gameObject.CompareTag("Border")) {
+
             }
         }
     }
