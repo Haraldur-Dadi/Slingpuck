@@ -25,8 +25,9 @@ public class ItemDb : MonoBehaviour {
     }
 
     public Sprite GetEquippedPuck() {
-        int index = EquippedItems[0];
-        return Items[index].sprite;
+        int id = EquippedItems[0];
+        Item item = Items.Find(i => i.id == id);
+        return item.sprite;
     }
     public void UnlockItem(int id) {
         Items[id].isUnlocked = true;
@@ -43,7 +44,8 @@ public class ItemDb : MonoBehaviour {
     }
     private void SetBoardSprite() {
         int id = EquippedItems[1];
-        Board.sprite = Items[id].sprite;
+        Item item = Items.Find(i => i.id == id);
+        Board.sprite = item.sprite;
     }
     public bool IsEquipped(int cat, int id) {
         return EquippedItems[cat] == Items[id].id;
