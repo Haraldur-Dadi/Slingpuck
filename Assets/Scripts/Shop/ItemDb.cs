@@ -96,7 +96,7 @@ public class ItemDb : MonoBehaviour {
         if (info == null) {
             // Auto unlock "standard" items and equip them
             Items[0].isUnlocked = Items[PucksLength].isUnlocked = Items[StadiumsLength].isUnlocked = true;
-            EquippedItems = new int[]{0, PucksLength, StadiumsLength};
+            EquippedItems = new int[]{0, 4, 7};
         } else {
             // Unlock items
             foreach (int id in info.unlocked) {
