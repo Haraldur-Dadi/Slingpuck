@@ -8,7 +8,7 @@ public class CanvasScaling : MonoBehaviour {
         if (aspect >= 1.87) {
             // 19.5:9
             canvasScaler.matchWidthOrHeight = 0.5f;
-            Camera.main.orthographicSize = 5.85f;
+            Camera.main.orthographicSize = 6.25f;
         } else if (aspect >= 1.74) {
             // 16:9
             canvasScaler.matchWidthOrHeight = 0;
