@@ -9,24 +9,39 @@ public class UIManager : MonoBehaviour {
     private void Awake() {
         if (Instance == null) {
             Instance = this;
-            MainMenu();
+            if (PlayerPrefs.GetString("version", "1.0.0") != currVersion) {
+                whatsNewPanel.SetActive(true);
+                settingsBtn.gameObject.SetActive(false);
+            } else {
+                MainMenu();
+            }
         } else {
             Destroy(this);
         }
     }
     #endregion
 
+    string currVersion = "1.0.2";
+
     public Animator menuAnim;
     public GameObject mainMenu;
     public GameObject settingsMenu;
     public GameObject shopMenu;
     public GameObject winScreen;
+    public GameObject whatsNewPanel;
 
     public Image settingsBtn;
     public Sprite settingsSprite;
     public Sprite pauseSprite;
     public GameObject backToMenuBtn;
 
+    public void CloseWathsNewPanel() { 
+        AudioManager.Instance.PlayButtonClick();
+        whatsNewPanel.SetActive(false);
+        PlayerPrefs.SetString("version", currVersion);
+        settingsBtn.gameObject.SetActive(true);
+        MainMenu();
+    }
     public void MainMenu() {
         // Display main menu
         mainMenu.SetActive(true);
