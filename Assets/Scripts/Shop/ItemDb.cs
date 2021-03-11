@@ -79,12 +79,15 @@ public class ItemDb : MonoBehaviour {
             new Item(9, "Christmas Ball", 200), // Free for logging in during christmas event
             new Item(10, "Candy Cane", 250),
             new Item(11, "Christmas Wreath", 300),
+            new Item(13, "Tennis Ball", 200),
+            new Item(14, "Juggle Ball", 200),
             // Stadiums
             new Item(4, "Stadium", 0), // Free
             new Item(5, "Ice Hockey Rink", 250),
             new Item(6, "Football Stadium", 275),
             new Item(8, "Basketball Court", 400),
             new Item(12, "Christmas Park", 350),
+            new Item(15, "Tennis Court", 300),
             // Slingshots
             new Item(7, "Slingshot", 0) // Free
         };

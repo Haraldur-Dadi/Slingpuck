@@ -10,7 +10,6 @@ public class Shop : MonoBehaviour {
     // Selecting category buttons
     public Button puckBtn;
     public Button stadiumBtn;
-    public Button slingshotBtn;
 
     // Selecting item buttons
     public Transform itemSelectParent;
@@ -33,7 +32,6 @@ public class Shop : MonoBehaviour {
         SelectCategory(0);
         puckBtn.onClick.AddListener(() => AudioManager.Instance.PlayButtonClick());
         stadiumBtn.onClick.AddListener(() => AudioManager.Instance.PlayButtonClick());
-        slingshotBtn.onClick.AddListener(() => AudioManager.Instance.PlayButtonClick());
     }
 
     public void SelectCategory(int cat) {
@@ -43,19 +41,16 @@ public class Shop : MonoBehaviour {
             itemImg.sprite = puckBaseSprite;
             puckBtn.interactable = false;
             stadiumBtn.interactable = true;
-            slingshotBtn.interactable = true;
         } else if (cat == 1) {
             // Selecting stadium
             itemImg.sprite = stadiumBaseSprite;
             puckBtn.interactable = true;
             stadiumBtn.interactable = false;
-            slingshotBtn.interactable = true;
         } else {
             // Selecting slingshots
             itemImg.sprite = slingshotBaseSprite;
             puckBtn.interactable = true;
             stadiumBtn.interactable = true;
-            slingshotBtn.interactable = false;
         }
         CreateSelectItemButtons();
     }
