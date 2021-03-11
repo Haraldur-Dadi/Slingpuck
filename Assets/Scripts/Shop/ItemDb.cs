@@ -5,8 +5,8 @@ public class ItemDb : MonoBehaviour {
     public static ItemDb Instance;
     public List<Item> Items;
     public int[] EquippedItems; // Puck, Stadium, Slingshot
-    private int PucksLength = 7;
-    private int StadiumsLength = 5;
+    private int PucksLength = 9;
+    private int StadiumsLength = 6;
     private int SlingshotsLength = 1;
 
     public SpriteRenderer Board;
