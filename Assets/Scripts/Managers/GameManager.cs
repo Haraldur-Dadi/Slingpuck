@@ -9,6 +9,7 @@ public class GameManager : MonoBehaviour {
     void Awake() {
         if (Instance == null) {
             Instance = this;
+            analytics = GetComponent<AnalyticsManager>();
             playing = false;
             pucksToWin = puckSpawnPoints.Length;
             SpawnObjects();
@@ -18,6 +19,8 @@ public class GameManager : MonoBehaviour {
         }
     }
     #endregion
+
+    private AnalyticsManager analytics;
 
     public bool playing;
     private int pucksToWin;
@@ -73,6 +76,7 @@ public class GameManager : MonoBehaviour {
         Instantiate(rope, new Vector3(0, -4.25f, 0), Quaternion.identity);
     }
     public void StartNewGame() {
+        analytics.ReportGameStarted(player1);
         UIManager.Instance.HideWinScreen();
         CleanBoard();
         pucksTeam1 = new List<Puck>();
@@ -186,6 +190,8 @@ public class GameManager : MonoBehaviour {
         }
     }
     private void GameOver(bool team1Won) {
+        analytics.ReportGameFinishedAnalytics(player1, team1Won);
+
         playing = false;
         if (player1 && team1Won) {
             CurrencyManager.Instance.AddGold(10);

@@ -4405,6 +4405,7 @@ GameObject:
   - component: {fileID: 854532935}
   - component: {fileID: 854532934}
   - component: {fileID: 854532937}
+  - component: {fileID: 854532938}
   - component: {fileID: 854532930}
   - component: {fileID: 854532929}
   m_Layer: 0
@@ -4778,6 +4779,18 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   goldTxt: {fileID: 901889606}
+--- !u!114 &854532938
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 854532926}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 48ed4b93924659b4f894fbc833db021a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &891662979
 GameObject:
   m_ObjectHideFlags: 0
