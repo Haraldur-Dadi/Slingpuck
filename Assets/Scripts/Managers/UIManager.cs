@@ -21,7 +21,7 @@ public class UIManager : MonoBehaviour {
     }
     #endregion
 
-    string currVersion = "1.0.2";
+    string currVersion = "1.0.3";
 
     public Animator menuAnim;
     public GameObject mainMenu;
